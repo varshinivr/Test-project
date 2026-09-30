@@ -1,0 +1,34 @@
+listen:
+  host: 0.0.0.0
+  port: 8080
+  public_url: https://claude-gateway.claudegw-lab-test.click
+  trusted_proxies:
+    - 10.0.0.0/24
+    - 10.0.1.0/24
+
+oidc:
+  issuer: https://accounts.google.com
+  client_id: 561732867832-4ctd18gg9t051p4c2lepndeuvq2r8t2t.apps.googleusercontent.com
+  client_secret: ${OIDC_CLIENT_SECRET}
+  allowed_email_domains:
+    - gmail.com
+  scopes: [openid, profile, email]
+  extra_auth_params:
+    access_type: offline
+    prompt: consent
+
+session:
+  jwt_secret: ${GATEWAY_JWT_SECRET}
+  ttl_hours: 8
+
+store:
+  postgres_url: ${GATEWAY_POSTGRES_URL}
+  username: gateway_admin
+  password: ${GATEWAY_POSTGRES_PASSWORD}
+
+upstreams:
+  - provider: bedrock
+    region: us-east-1
+    auth: {}
+
+auto_include_builtin_models: true
