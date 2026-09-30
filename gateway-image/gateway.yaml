@@ -7,15 +7,13 @@ listen:
     - 10.0.1.0/24
 
 oidc:
-  issuer: https://accounts.google.com
-  client_id: 561732867832-4ctd18gg9t051p4c2lepndeuvq2r8t2t.apps.googleusercontent.com
+  issuer: https://login.microsoftonline.com/<ENTRA_TENANT_ID>/v2.0
+  client_id: REPLACE_WITH_ENTRA_APPLICATION_CLIENT_ID
   client_secret: ${OIDC_CLIENT_SECRET}
-  allowed_email_domains:
-    - gmail.com
-  scopes: [openid, profile, email]
-  extra_auth_params:
-    access_type: offline
-    prompt: consent
+  allowed_groups:
+    - REPLACE_WITH_TIER_10_ENTRA_GROUP_OBJECT_ID
+    - REPLACE_WITH_TIER_20_ENTRA_GROUP_OBJECT_ID
+  scopes: [openid, profile, email, offline_access]
 
 session:
   jwt_secret: ${GATEWAY_JWT_SECRET}
@@ -25,6 +23,21 @@ store:
   postgres_url: ${GATEWAY_POSTGRES_URL}
   username: gateway_admin
   password: ${GATEWAY_POSTGRES_PASSWORD}
+
+managed:
+  policies:
+    - match:
+        groups: [REPLACE_WITH_TIER_10_ENTRA_GROUP_OBJECT_ID]
+      cli:
+        availableModels: [claude-sonnet-4-6]
+        enforceAvailableModels: true
+        permissions: {}
+    - match:
+        groups: [REPLACE_WITH_TIER_20_ENTRA_GROUP_OBJECT_ID]
+      cli:
+        availableModels: [claude-sonnet-4-6, claude-haiku-4-5]
+        enforceAvailableModels: true
+        permissions: {}
 
 upstreams:
   - provider: bedrock
